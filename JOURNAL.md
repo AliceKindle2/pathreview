@@ -17,14 +17,15 @@ I ran the test suite against the actual implementation to confirm the issue rath
 
 ## Week 8 — Reproduction & solution planning
 
-**Reproduction commit link:** [link to commit documenting the reproduced issue]
+**Reproduction commit link:** [https://github.com/AliceKindle2/pathreview/blob/fix/%23156-README-scorer-test/tests/unit/test_readme_scorer.py]
 
 **Reproduction summary:**
-[1–2 sentences: How did you reproduce the issue? What did you observe?]
+Ran ReadmeScorer._score_readme() directly against the fixture in test_readme_with_all_quality_signals and found the actual word count is 51, not >100 as the test asserts — the scorer's word-splitting logic is correct, but the test fixture's markdown structure (headings, code fences, bullets, badges) inflates its apparent length without adding enough real prose to cross the threshold.
 
-**PLAN.md link:** [link to PLAN.md in your fork]
+**PLAN.md link:** [https://github.com/AliceKindle2/pathreview/blob/fix/%23156-README-scorer-test/PLAN.md]
 
 **Walkthrough video (recommended):** [link to your Loom video, ≤2 min — shared for early feedback]
 
 **Blockers or open questions:**
-[Anything you're still uncertain about going into Week 9, or leave blank]
+* Still need to confirm no other test fixtures in test_readme_scorer.py (or elsewhere in the repo) share this same boundary-mismatch pattern before considering the fix complete.
+* Haven't yet verified that expanded fixture text won't accidentally trip other regex-based assertions (installation/usage/tech-stack detection) once prose is added.
