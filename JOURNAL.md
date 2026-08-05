@@ -59,4 +59,36 @@ Updated tests/unit/test_readme_scorer.py — specifically only the test_readme_w
 
 **Self-review confirmation:** [x] make check passes  [x] make test-unit passes
 
-**Draft PR feedback received from:** [name or Slack handle, or "none"]
+**Draft PR feedback received from:** none
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No review came in due to no PR reviews during summer.
+
+**How you responded:**
+
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+Environment setup ate more time than the actual code fix. Getting make test-unit and make check running on Windows required switching from PowerShell to Git Bash, installing make via Scoop, and getting Docker Desktop running before make setup would even complete. The bug itself — a test fixture with too few words for its own word-count assertion — took less time to diagnose and fix than getting my toolchain into a state where I could actually run the project's real test suite.
+
+**What did you learn about working in a large codebase?**
+The biggest shift was learning to trust — and verify — assumptions about where a bug actually lives. My first instinct was to suspect the ReadmeScorer implementation itself, but tracing through _score_readme() line by line showed the word-counting logic was correct; the test fixture was the thing that was wrong. In a codebase with many interacting files (orchestrator.py, base.py, five different tool implementations), it mattered to isolate the actual unit under test rather than assume the bug was wherever the symptom showed up. I also learned that "passing tests" isn't the same as "correct tests" — a fixture can pass by accident (or fail by an off-by-one word count) without the underlying code being wrong at all.
+
+**How did AI tools help — and where did they fall short?**
+AI was most useful for quickly tracing through the regex logic in _score_readme() and confirming, word-count arithmetic and all, that the scorer's behavior was correct against each fixture — that kind of mechanical verification (running the actual class against test inputs, counting words, checking category boundaries) is exactly the kind of thing that's fast and reliable to hand off. It also helped catch the mypy type-annotation gaps across all 23 test methods in one pass rather than fixing them one error at a time.
+Where it fell short: it couldn't run the project's actual make check / make test-unit in my real Windows environment, install pytest from the internet, or interact with Docker Desktop — all of that had to happen in my own terminal, and troubleshooting Git Bash path syntax, Scoop installs, and Docker startup was something I had to work through myself, screenshot by screenshot.
+
+**What would you do differently if you started over?**
+I'd set up and verify my full local environment (Git Bash, make, Docker Desktop, make setup) in Week 7 before touching any code, rather than discovering environment gaps midway through implementing the fix. I'd also scan the whole test file for similar boundary-condition mismatches earlier in the process, instead of treating it as a late cleanup step — it turned out there weren't any others in this file, but I didn't know that until I checked.
+
+**What are you most proud of from this module?**
+Diagnosing the root cause correctly on the first pass — recognizing that a failing test doesn't automatically mean the implementation is broken, and being able to prove it (running the fixture against the real ReadmeScorer class and confirming word_count = 51) instead of just guessing and rewriting the scorer to force the test to pass.
